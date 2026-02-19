@@ -3,14 +3,10 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from rapidfuzz import process
 
-# Global variables (will be loaded later)
 movies = None
 genre_matrix = None
 
 
-# ----------------------------
-# LOAD DATASET + BUILD MODEL
-# ----------------------------
 def load_model():
     global movies, genre_matrix
 
@@ -21,7 +17,6 @@ def load_model():
     print("Dataset loaded!")
     print("Total movies:", len(movies))
 
-    # Clean genres
     movies["genres"] = movies["genres"].str.replace("|", " ", regex=False)
 
     print("Creating TF-IDF matrix...")
@@ -32,9 +27,6 @@ def load_model():
     print("TF-IDF matrix created!")
 
 
-# ----------------------------
-# FUZZY SEARCH FUNCTION
-# ----------------------------
 def find_closest_movie(user_input):
 
     titles = movies["title"].tolist()
@@ -50,9 +42,6 @@ def find_closest_movie(user_input):
     return match
 
 
-# ----------------------------
-# SINGLE MOVIE RECOMMENDATION
-# ----------------------------
 def recommend(movie_title, num_recommendations=10):
 
     try:
@@ -80,9 +69,6 @@ def recommend(movie_title, num_recommendations=10):
     return movies["title"].iloc[movie_indices].tolist()
 
 
-# ----------------------------
-# MULTI MOVIE TASTE RECOMMENDATION
-# ----------------------------
 def recommend_from_list(movie_list, num_recommendations=5):
 
     movie_indices = []
@@ -99,11 +85,9 @@ def recommend_from_list(movie_list, num_recommendations=5):
 
     if len(movie_indices) == 0:
         return ["No valid movies found"]
-
-    # Create user taste vector
+   
     user_vector = genre_matrix[movie_indices].mean(axis=0)
 
-    # Convert matrix to numpy array
     user_vector = user_vector.A
 
     similarity_scores = cosine_similarity(user_vector, genre_matrix)
