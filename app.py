@@ -10,10 +10,6 @@ st.set_page_config(page_title="Movie Recommender", layout="wide")
 st.title("🎬 Movie Recommendation System")
 st.write("Get movie recommendations based on your taste.")
 
-
-# ----------------------------
-# LOAD MODEL (Cached)
-# ----------------------------
 @st.cache_resource
 def initialize():
     load_data.load_model()
@@ -22,9 +18,6 @@ def initialize():
 initialize()
 
 
-# ----------------------------
-# FETCH POSTER FROM TMDB
-# ----------------------------
 import time
 
 import re
@@ -43,7 +36,7 @@ def fetch_poster(movie_title):
     }
 
     try:
-        time.sleep(0.6)  # 🔥 slower = safer
+        time.sleep(0.6)   
 
         response = requests.get(url, params=params, timeout=10)
         response.raise_for_status()
@@ -62,19 +55,12 @@ def fetch_poster(movie_title):
 
 
 
-
-# ----------------------------
-# USER INPUT
-# ----------------------------
 user_input = st.text_input(
     "Enter movie names separated by comma",
     placeholder="e.g. dark knight, inception, interstellar"
 )
 
 
-# ----------------------------
-# RECOMMEND BUTTON
-# ----------------------------
 if st.button("Recommend"):
 
     if user_input.strip() == "":
@@ -88,13 +74,13 @@ if st.button("Recommend"):
             st.error(f"Model Error: {e}")
             recommendations = None
 
-        # 🔥 SAFE CHECK
+        
         if not recommendations:
             st.error("No recommendations found.")
         else:
             st.subheader("Recommended Movies")
 
-            # Limit to 5 recommendations safely
+            
             recommendations = recommendations[:5]
 
             cols = st.columns(5)
